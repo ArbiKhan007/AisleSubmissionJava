@@ -43,7 +43,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentOtpBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -57,7 +57,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         navController = Navigation.findNavController(view);
         setupObservers();
 
-        new CountDownTimer(60*1000, 1000) {
+        new CountDownTimer(60 * 1000, 1000) {
             @Override
             public void onTick(long l) {
                 // formula for conversion for
@@ -87,7 +87,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() > 4){
+                if (charSequence.length() > 4) {
                     Toast.makeText(requireActivity(), "Max 4 digit allowed", Toast.LENGTH_SHORT).show();
                     binding.edtOtpNum.setText(charSequence.subSequence(0, 4));
                 }
@@ -104,12 +104,16 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         viewModel.getToken().observe(requireActivity(), new Observer<TokenResponse>() {
             @Override
             public void onChanged(TokenResponse tokenResponse) {
-                if(tokenResponse != null && tokenResponse.getToken() != null){
-                    try {
-                        binding.pb.setVisibility(View.GONE);
-                        navController.navigate(R.id.action_OTPFragment_to_homeScreenFragment);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                binding.pb.setVisibility(View.GONE);
+                if (tokenResponse != null) {
+                    if(tokenResponse.getToken() != null){
+                        try {
+                            navController.navigate(R.id.action_OTPFragment_to_homeScreenFragment);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        Toast.makeText(requireActivity(), "Wrong OTP", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -120,16 +124,16 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
 
-        if(id == R.id.btn_continue){
+        if (id == R.id.btn_continue) {
             String otp = binding.edtOtpNum.getText().toString();
 
-            if(otp.trim().isEmpty()){
+            if (otp.trim().isEmpty()) {
                 Toast.makeText(requireActivity(), "Invalid OTP", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String userMobileNumber = viewModel.getMobileNumberLiveData().getValue();
-            if(userMobileNumber != null){
+            if (userMobileNumber != null) {
                 TokenGenReq tokenGenReq = new TokenGenReq();
                 tokenGenReq.setOtp(otp);
                 tokenGenReq.setNumber(userMobileNumber);

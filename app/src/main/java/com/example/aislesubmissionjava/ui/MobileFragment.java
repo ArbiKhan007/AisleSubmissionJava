@@ -36,7 +36,7 @@ public class MobileFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMobileBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -65,11 +65,11 @@ public class MobileFragment extends Fragment implements View.OnClickListener {
             viewModel.getUserStatus().observe(requireActivity(), new Observer<Status>() {
                 @Override
                 public void onChanged(Status status) {
-                    if(status != null){
-                        if(status.getStatus()){
-                            binding.pb.setVisibility(View.GONE);
+                    if (status != null) {
+                        binding.pb.setVisibility(View.GONE);
+                        if (status.getStatus()) {
                             navController.navigate(R.id.action_mobileFragment_to_OTPFragment);
-                        }else{
+                        } else {
                             Toast.makeText(requireActivity(), "User not found!", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -84,23 +84,23 @@ public class MobileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
 
-        if(id == R.id.btn_continue_mob){
+        if (id == R.id.btn_continue_mob) {
             String mobileNumber = binding.edtPhoneNumber.getText().toString();
             String countryCode = binding.edtCountryCode.getText().toString();
 
-            if(mobileNumber.trim().isEmpty() || mobileNumber.trim().length() != 10){
+            if (mobileNumber.trim().isEmpty() || mobileNumber.trim().length() != 10) {
                 Toast.makeText(requireActivity(), "Mobile Number Invalid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if(countryCode.trim().isEmpty() || countryCode.trim().length() != 3){
+            if (countryCode.trim().isEmpty() || countryCode.trim().length() != 3) {
                 Toast.makeText(requireActivity(), "Country Code Invalid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             MobileStatusReq mobileStatusReq = new MobileStatusReq();
-            mobileStatusReq.setNumber(countryCode+mobileNumber);
-            viewModel.setMobileNumber(countryCode+mobileNumber);
+            mobileStatusReq.setNumber(countryCode + mobileNumber);
+            viewModel.setMobileNumber(countryCode + mobileNumber);
             viewModel.getUserStatus(mobileStatusReq);
             binding.pb.setVisibility(View.VISIBLE);
         }
